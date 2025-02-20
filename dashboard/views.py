@@ -4,7 +4,7 @@ from dietitians.models import Dietitian
 from .serializers import DietitianStatusUpdateSerializer
 from rest_framework.permissions import IsAdminUser
 from dietitians.serializers import DietitianSerializer
-from .services import DietitianStatusService, DietitianService
+from .services import DietitianStatusService, DietitianService, DietitianStatsService
 from rest_framework.filters import SearchFilter
 
 class UpdateDietitianStatusView(generics.UpdateAPIView):
@@ -42,3 +42,9 @@ class DietitianDetailView(generics.RetrieveAPIView):
     permission_classes = [IsAdminUser]
     lookup_field = "id" 
 
+class DietitianStatsView(generics.RetrieveAPIView):
+    permission_classes = [IsAdminUser]
+
+    def retrieve(self, request, *args, **kwargs):
+        stats = DietitianStatsService.get_dietitian_statistics()
+        return Response(stats)

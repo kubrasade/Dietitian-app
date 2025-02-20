@@ -13,7 +13,7 @@ class DietitianStatusService:
         dietitian.save()
 
         return dietitian
-
+    
 class DietitianService:
     @staticmethod
     def filter_dietitians(query_params):
@@ -52,3 +52,20 @@ class DietitianService:
             )
 
         return queryset
+    
+class DietitianStatsService:
+    @staticmethod
+    def get_dietitian_statistics():
+        today = now()
+        last_30_days = today - timedelta(days=30)
+
+        stats = {
+            "total_dietitians": Dietitian.objects.count(),
+            "approved_dietitians": Dietitian.objects.filter(status=Status.APPROVED).count(),
+            "pending_dietitians": Dietitian.objects.filter(status=Status.PENDING).count(),
+            "rejected_dietitians": Dietitian.objects.filter(status=Status.REJECTED).count(),
+            "last_30_days_applications": Dietitian.objects.filter(created_at__gte=last_30_days).count(),
+            "active_dietitians": Dietitian.objects.filter(is_active=True).count(),
+        }
+
+        return stats
