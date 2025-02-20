@@ -14,7 +14,9 @@ def dietitian_directory_path(instance, filename):
 class Dietitian(BaseModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="dietitian_profile")
     username = models.CharField(max_length=100, unique=True)
-    full_name = models.CharField(max_length=255)
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    title= models.CharField(max_length=100)
     licence_number = models.CharField(max_length=50, unique=True)
     diploma = models.FileField(upload_to=dietitian_directory_path, null=True, blank=True)
     experience_years = models.PositiveIntegerField(validators=[MinValueValidator(1)])

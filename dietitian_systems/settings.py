@@ -124,7 +124,7 @@ AUTHENTICATION_BACKENDS = [
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
-ACCOUNT_AUTHENTICATION_METHOD = "username"
+ACCOUNT_LOGIN_METHODS = {"username"}
 
 REST_AUTH_REGISTER_SERIALIZERS = {
     'REGISTER_SERIALIZER': 'path.to.CustomRegisterSerializer',
@@ -135,8 +135,8 @@ REST_AUTH_SERIALIZERS = {
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',  # Oturum bazlı kimlik doğrulama
-        'rest_framework_simplejwt.authentication.JWTAuthentication',  # JWT doğrulama
+        'rest_framework.authentication.SessionAuthentication',  
+        'rest_framework_simplejwt.authentication.JWTAuthentication', 
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -144,8 +144,8 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),  # 1 gün boyunca geçerli
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),  # 7 gün boyunca giriş açık kalsın
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),  
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),  
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
 }
