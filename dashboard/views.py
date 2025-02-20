@@ -4,7 +4,8 @@ from dietitians.models import Dietitian
 from .serializers import DietitianStatusUpdateSerializer
 from rest_framework.permissions import IsAdminUser
 from dietitians.serializers import DietitianSerializer
-from .services import DietitianStatusService
+from .services import DietitianStatusService, DietitianService
+from rest_framework.filters import SearchFilter
 
 class UpdateDietitianStatusView(generics.UpdateAPIView):
     queryset = Dietitian.objects.all()
@@ -25,3 +26,19 @@ class UpdateDietitianStatusView(generics.UpdateAPIView):
 
         return Response(serializer.errors, status=400)
     
+
+class DietitianListView(generics.ListAPIView):
+    serializer_class = DietitianSerializer
+    permission_classes = [IsAdminUser]
+    filter_backends = [SearchFilter]
+    search_fields = ['user__username', 'user__email']
+
+    def get_queryset(self):
+        return DietitianService.filter_dietitians(self.request.query_params)
+
+class DietitianDetailView(generics.RetrieveAPIView):
+    queryset = Dietitian.objects.all()
+    serializer_class = DietitianSerializer
+    permission_classes = [IsAdminUser]
+    lookup_field = "id" 
+

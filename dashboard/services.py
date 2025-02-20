@@ -13,4 +13,42 @@ class DietitianStatusService:
         dietitian.save()
 
         return dietitian
-    
+
+class DietitianService:
+    @staticmethod
+    def filter_dietitians(query_params):
+        queryset = Dietitian.objects.all()
+
+        status = query_params.get('status')
+        is_active = query_params.get('is_active')
+        start_date = query_params.get('start_date')
+        end_date = query_params.get('end_date')
+        search = query_params.get('search')
+
+        if status is not None:
+            queryset = queryset.filter(status=status)
+
+        if is_active is not None:
+            queryset = queryset.filter(is_active=is_active)
+
+        if start_date and end_date:
+            try:
+                start_date = datetime.strptime(start_date, "%Y-%m-%d")
+                end_date = datetime.strptime(end_date, "%Y-%m-%d")
+                start_date = make_aware(start_date)
+                end_date = make_aware(end_date)
+
+                queryset = queryset.filter(created_at__range=[start_date, end_date])
+            except ValueError:
+                pass 
+
+        if search:
+            queryset = queryset.filter(
+                Q(user__username__icontains=search) |
+                Q(user__email__icontains=search) |
+                Q(user__first_name__icontains=search) |
+                Q(user__last_name__icontains=search) |
+                Q(title__icontains=search)  
+            )
+
+        return queryset
