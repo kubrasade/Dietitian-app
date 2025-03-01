@@ -1,5 +1,5 @@
 from django.db import models
-from core.mixins import BaseModel
+from core.models import BaseModel
 from django.contrib.auth.models import AbstractUser
 from .enum import UserRole
 

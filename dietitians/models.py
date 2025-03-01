@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from core.enum import Gender, Status
-from core.mixins import BaseModel
+from core.models import BaseModel
 from .enum import ExpertiseField
 from django.core.validators import MinValueValidator
 

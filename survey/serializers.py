@@ -7,15 +7,15 @@ class SurveyFileSerializer(serializers.ModelSerializer):
         fields = ("id", "file")
 
 class SurveySerializer(serializers.ModelSerializer):
-    files = SurveyFileSerializer(many=True, read_only=True) 
+    files = SurveyFileSerializer(many=True, required=False) 
 
     class Meta:
         model = Survey
         fields = "__all__"
-        read_only_fields = ("id", "user")  
+        read_only_fields = ("id", "user")
 
     def create(self, validated_data):
-        files_data = self.context["request"].FILES.getlist("files")  
+        files_data = self.context["request"].FILES.getlist("files") 
         user = self.context["request"].user  
         validated_data["user"] = user  
 
@@ -33,7 +33,7 @@ class SurveySerializer(serializers.ModelSerializer):
         files_data = self.context["request"].FILES.getlist("files")  
         instance = super().update(instance, validated_data)
 
-        if instance.files.all().count() + len(files_data) > 5:
+        if instance.files.count() + len(files_data) > 5:
             raise serializers.ValidationError({"files": "You can upload a maximum of 5 files per survey."})
 
         file_instances = [SurveyFile(survey=instance, file=file) for file in files_data]

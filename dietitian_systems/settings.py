@@ -31,6 +31,7 @@ THIRD_PARTY_APPS = [
     'djoser',
     'corsheaders',
     'rest_framework_simplejwt.token_blacklist',
+    'django_celery_beat',
 ]
 LOCAL_APPS =[
     'authub',
@@ -165,3 +166,8 @@ EMAIL_HOST_USER = 'kubrasade@gmail.com'
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = 'kubrasade@gmail.com'
 
+
+CELERY_BROKER_URL = "redis://redis:6379/0"
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True

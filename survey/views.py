@@ -1,39 +1,23 @@
 from rest_framework import generics, permissions, serializers
 from .models import Survey, SurveyFile
 from .serializers import SurveySerializer, SurveyFileSerializer
+from core.mixins import BaseMixin
 
-class SurveyListCreateView(generics.ListCreateAPIView):
+class SurveyListCreateView(BaseMixin, generics.ListCreateAPIView):
     serializer_class = SurveySerializer
     permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        return Survey.objects.filter(user=self.request.user)
+    model= Survey
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        existing_survey = Survey.objects.filter(user= self.request.user, is_deleted= True).first()
+        if existing_survey:
+            existing_survey.is_deleted = False
+            existing_survey.save()
+        else:
+            serializer.save(user=self.request.user)
 
-class SurveyDetailView(generics.RetrieveUpdateDestroyAPIView):
+class SurveyDetailView(BaseMixin,generics.RetrieveUpdateDestroyAPIView):
     serializer_class = SurveySerializer
     permission_classes = [permissions.IsAuthenticated]
+    model= Survey
 
-    def get_queryset(self):
-        return Survey.objects.filter(user=self.request.user)
-    
-
-class SurveyFileListCreateView(generics.ListCreateAPIView):
-    serializer_class = SurveyFileSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        return SurveyFile.objects.filter(survey__user=self.request.user)
-
-    def perform_create(self, serializer):
-        survey_id = self.request.data.get("survey")
-        survey = Survey.objects.filter(id=survey_id, user=self.request.user).first()
-        if not survey:
-            raise serializers.ValidationError({"survey": "Invalid or unauthorized survey."})
-        
-        if survey.files.count() >= 5:
-            raise serializers.ValidationError({"files": "You can upload a maximum of 5 files per survey."})
-
-        serializer.save(survey=survey)

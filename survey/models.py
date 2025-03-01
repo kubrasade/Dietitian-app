@@ -4,7 +4,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
-from core.mixins import BaseModel  
+from core.models import BaseModel  
 from core.enum import Gender
 from .enum import Activity_Level, Goals
 from django.core.validators import FileExtensionValidator
