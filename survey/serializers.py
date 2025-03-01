@@ -40,3 +40,7 @@ class SurveySerializer(serializers.ModelSerializer):
         SurveyFile.objects.bulk_create(file_instances)
 
         return instance
+    
+class BMISerializer(serializers.Serializer):
+    bmi = serializers.DecimalField(max_digits=5, decimal_places=2, allow_null=True)
+    category = serializers.CharField(allow_null=True)
