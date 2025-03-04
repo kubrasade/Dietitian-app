@@ -3,6 +3,10 @@ from django.db.models import Q
 from datetime import datetime,timedelta
 from django.utils.timezone import make_aware, now
 from core.enum import Status
+from django.shortcuts import get_object_or_404
+from rest_framework.exceptions import PermissionDenied
+from reviews.models import Review
+
 
 class DietitianStatusService:
     @staticmethod
@@ -69,3 +73,17 @@ class DietitianStatsService:
         }
 
         return stats
+    
+class ReviewAdminService:
+    @staticmethod
+    def get_pending_reviews():
+        return Review.objects.filter(status=Status.PENDING)
+
+    @staticmethod
+    def change_review_status(user, review_id, status):
+        if not user.is_staff:
+            raise PermissionDenied("Only admins can change review status.")
+        review = get_object_or_404(Review, id=review_id)
+        review.status = status
+        review.save()
+        return review

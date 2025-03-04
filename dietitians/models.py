@@ -16,11 +16,12 @@ class Dietitian(BaseModel):
     username = models.CharField(max_length=100, unique=True)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
+    image= models.ImageField(upload_to=dietitian_directory_path, null=True, blank=True)
     title= models.CharField(max_length=100)
     licence_number = models.CharField(max_length=50, unique=True)
     diploma = models.FileField(upload_to=dietitian_directory_path, null=True, blank=True)
     experience_years = models.PositiveIntegerField(validators=[MinValueValidator(1)])
-    expertise_fields = models.PositiveSmallIntegerField(ExpertiseField, blank=True) 
+    expertise_field = models.PositiveSmallIntegerField(ExpertiseField, blank=True) 
     status = models.PositiveSmallIntegerField(choices=Status.choices, default=Status.PENDING)
     gender = models.PositiveSmallIntegerField(choices=Gender.choices) 
     location = models.CharField(max_length=255) 
@@ -39,7 +40,13 @@ class Dietitian(BaseModel):
         if self.user and self.user.username != self.username:  
             self.user.username = self.username
             self.user.save(update_fields=["username"]) 
-
+    def average_rating(self):
+        reviews= self.reviews.all()
+        if not reviews.exists():
+            return None
+        else:
+            return round(sum(review.rating for review in reviews)/reviews.count(), 1)
+        
     def __str__(self):
         return f"{self.user.username} - {self.get_status_display()}"
 
