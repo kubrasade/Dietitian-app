@@ -38,6 +38,7 @@ LOCAL_APPS =[
     'core',
     'dashboard',
     'dietitians',
+    'match',
     'reviews',
     'survey',
 ]
